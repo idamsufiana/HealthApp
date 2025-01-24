@@ -6,8 +6,8 @@ import com.auth0.Tokens;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.gits.health.HealthApp.config.SecurityConfig;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,14 +29,14 @@ public class AuthController {
     @GetMapping(value = "/login")
     protected void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String redirectUri = "http://localhost:8080/callback";
-        String authorizeUrl = authenticationController.buildAuthorizeUrl(request, response, redirectUri)
+        String authorizeUrl = authenticationController.buildAuthorizeUrl((javax.servlet.http.HttpServletRequest) request, (javax.servlet.http.HttpServletResponse) response, redirectUri)
                 .withScope("openid email")
                 .build();
         response.sendRedirect(authorizeUrl);
     }
     @GetMapping(value="/callback")
     public void callback(HttpServletRequest request, HttpServletResponse response) throws IdentityVerificationException, IOException {
-        Tokens tokens = authenticationController.handle(request, response);
+        Tokens tokens = authenticationController.handle((javax.servlet.http.HttpServletRequest) request, (javax.servlet.http.HttpServletResponse) response);
 
         DecodedJWT jwt = JWT.decode(tokens.getIdToken());
         TestingAuthenticationToken authToken2 = new TestingAuthenticationToken(jwt.getSubject(),
