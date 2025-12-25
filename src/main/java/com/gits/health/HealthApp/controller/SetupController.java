@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping({"Gits/health"})
+@RequestMapping({"api/setup"})
 @Slf4j
 public class SetupController extends BaseController {
     @Autowired
