@@ -4,6 +4,7 @@ import com.gits.health.HealthApp.model.CrudEntity;
 import com.gits.health.HealthApp.model.Product;
 import com.gits.health.HealthApp.model.dto.ProductDto;
 import com.gits.health.HealthApp.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,18 +42,16 @@ public class ProductService {
         this.productRepository.delete(id);
     }
 
-
-    public void saveList(List<Product> products){
-        try {
-            for(Product product: products){
-                productRepository.save(product);
-            }
-        }catch(Exception e){
-            e.printStackTrace();
+    @Transactional
+    public void saveList(List<Product> products) {
+        int batchSize = 500;
+        for (int i = 0; i < products.size(); i += batchSize) {
+            int end = Math.min(i + batchSize, products.size());
+            productRepository.saveAll(products.subList(i, end));
+            productRepository.flush();
         }
-
-
     }
+
     public List<Product> findBySKU(String sku){
         List<Product> productsList = new ArrayList<>();
         try {
