@@ -12,7 +12,7 @@ public class AwsConfig {
     @Bean
     public S3Client s3Client() {
         return S3Client.builder()
-                .region(Region.of("indonesia"))  // Set your desired AWS region
+                .region(Region.of("indonesia"))
                 .credentialsProvider(DefaultCredentialsProvider.create())
                 .build();
     }

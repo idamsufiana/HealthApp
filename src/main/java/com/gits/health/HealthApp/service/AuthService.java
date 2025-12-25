@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,9 +32,13 @@ public class AuthService {
 
     public String getAccessToken() {
 
-        // Request body parameters
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder
+                .fromHttpUrl(authUrl)
+                .queryParam("grant_type", "client_credentials");
+
+        String url = uriBuilder.toUriString();
+
         Map<String, String> bodyParams = new HashMap<>();
-        bodyParams.put("grant_type", client_credentials);
         bodyParams.put("client_id", clientId);
         bodyParams.put("client_secret", clientSecret);
 
@@ -46,7 +51,7 @@ public class AuthService {
 
         // Exchange request with server to fetch response
         ResponseEntity<Map> response = restTemplate.exchange(
-                authUrl,
+                url,
                 HttpMethod.POST,
                 requestEntity,
                 Map.class
