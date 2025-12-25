@@ -22,11 +22,11 @@ public class ProductUsecase {
     @Autowired
     ProductService productService;
 
-    public ProductResponse getAndsave(String AtcCode, String token){
+    public ProductResponse getAndsave(String productType, String token){
 
         ProductResponse product = new ProductResponse();
         try{
-            product = httpService.getProducts(AtcCode, token);
+            product = httpService.getProducts(productType, token);
             List<Product> products = mapToProductEntities(product);
             productService.saveList(products);
 

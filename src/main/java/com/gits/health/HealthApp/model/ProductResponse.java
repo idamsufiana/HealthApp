@@ -7,8 +7,6 @@ import java.util.List;
 
 @Data
 public class ProductResponse {
-    @JsonProperty("tag_code")
-    private String tagCode;
 
     private int total;
 
@@ -42,6 +40,9 @@ public class ProductResponse {
         @JsonProperty("farmalkes_type")
         private FarmalkesType farmalkesType;
 
+        @JsonProperty("dosage_form")
+        private DosageForm dosageForm;
+
         @JsonProperty("produksi_buatan")
         private String produksiBuatan;
 
@@ -54,7 +55,7 @@ public class ProductResponse {
 
         private String registrar;
 
-        private String generik;
+        private Boolean generik;
 
         private String rxterm;
 
@@ -92,13 +93,27 @@ public class ProductResponse {
         @JsonProperty("product_template")
         private ProductTemplate productTemplate;
 
+        @JsonProperty("active_ingredients")
+        private List<ActiveIngredient> activeIngredients;
+
+        private List<Tag> tags;
+
         private Replacement replacement;
+
+        @JsonProperty("paket_obat")
+        private List<PaketObat> paketObat;
 
         @Data
         public static class FarmalkesType {
             private String code;
             private String name;
             private String group;
+        }
+
+        @Data
+        public static class DosageForm {
+            private String code;
+            private String name;
         }
 
         @Data
@@ -125,9 +140,53 @@ public class ProductResponse {
         }
 
         @Data
+        public static class ActiveIngredient {
+            private String state;
+            private Boolean active;
+
+            @JsonProperty("kfa_code")
+            private String kfaCode;
+
+            @JsonProperty("zat_aktif")
+            private String zatAktif;
+
+            @JsonProperty("updated_at")
+            private String updatedAt;
+
+            @JsonProperty("kekuatan_zat_aktif")
+            private String kekuatanZatAktif;
+        }
+
+        @Data
+        public static class Tag {
+            private String code;
+            private String name;
+        }
+
+        @Data
         public static class Replacement {
             private Object product;
             private Object template;
         }
+
+        @Data
+        public static class PaketObat {
+            @JsonProperty("kfa_code")
+            private String kfaCode;
+
+            private Integer qty;
+
+            @JsonProperty("uom_name")
+            private String uomName;
+
+            @JsonProperty("ucum_cs_code")
+            private String ucumCsCode;
+
+            @JsonProperty("ucum_name")
+            private String ucumName;
+        }
+
+        @JsonProperty("total_data")
+        private Integer totalData;
     }
 }

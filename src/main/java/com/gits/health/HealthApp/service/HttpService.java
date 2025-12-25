@@ -22,7 +22,7 @@ public class HttpService {
     private String apiUrl;
 
 
-    public ProductResponse getProducts(String atcCode, String token) {
+    public ProductResponse getProducts(String productType, String token) {
         HttpHeaders httpHeaders = initHeaders(token);
 
         HttpEntity<String> entity = new HttpEntity<>(httpHeaders);
@@ -30,9 +30,8 @@ public class HttpService {
             String url = UriComponentsBuilder
                     .fromHttpUrl(apiUrl)
                     .queryParam("page", 1)
-                    .queryParam("size", 50)
-                    .queryParam("atc_code", atcCode)
-                    .queryParam("level", 1)
+                    .queryParam("size", 100)
+                    .queryParam("product_type", productType)
                     .toUriString();
 
         ResponseEntity<ProductResponse> response = restTemplate.exchange(
