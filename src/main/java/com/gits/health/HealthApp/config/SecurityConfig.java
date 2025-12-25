@@ -1,14 +1,13 @@
 package com.gits.health.HealthApp.config;
 
-import com.auth0.AuthenticationController;
-import com.auth0.jwk.JwkProvider;
-import com.auth0.jwk.JwkProviderBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -22,44 +21,23 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Value("${okta.oauth2.issuer}")
-    private String issuer;
-    @Value("${okta.oauth2.client-id}")
-    private String clientId;
-    @Value("${okta.oauth2.client-secret}")
-    private String clientSecret;
-
     @Bean
-    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/Gits/health/**", "/Gits/product/**").permitAll()
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(sm ->
+                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.GET, "/api/products/**")
+                        .hasAuthority("SCOPE_read:products")
+                        .requestMatchers(HttpMethod.POST, "/api/products/**")
+                        .hasAuthority("SCOPE_write:products")
                         .anyRequest().authenticated()
                 )
-                .oauth2Login(withDefaults())
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt());
 
-                .logout(logout -> logout
-                        .addLogoutHandler(logoutHandler()));
         return http.build();
-    }
-
-    private LogoutHandler logoutHandler() {
-        return (request, response, authentication) -> {
-            try {
-                String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-                response.sendRedirect(issuer + "v2/logout?client_id=" + clientId + "&returnTo=" + baseUrl);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        };
-    }
-
-    @Bean
-    public AuthenticationController authenticationController() throws UnsupportedEncodingException {
-        JwkProvider jwkProvider = new JwkProviderBuilder(issuer).build();
-        return AuthenticationController.newBuilder(issuer, clientId, clientSecret)
-                .withJwkProvider(jwkProvider)
-                .build();
     }
 
 }

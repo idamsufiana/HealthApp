@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping({"Gits/product"})
+@RequestMapping({"api/products"})
 @Slf4j
 public class ProductController extends BaseController {
 
