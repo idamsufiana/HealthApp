@@ -6,6 +6,8 @@ Auth0 for aunthentication & authorization
 file upload aws s3
 
 
+Please read product satu sehat.docx to see get token from satu sehat and Auth0 
+
 1. Login Auth0 → https://manage.auth0.com
 2. Create API
 3. Name: HealthApp API
